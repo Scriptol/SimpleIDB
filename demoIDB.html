@@ -71,7 +71,7 @@ async function start(fname) {
 	var response = await fetch(fname)
 	var str = await response.text();
 	var data = JSON.parse(str)
-	var idb = await cidb.open("fruits", "fstore")
+	var idb = await cidb.open("fruits", "fstore", {keyPath: "name", autoIncrement:false})
 	await cidb.fill(idb, "fstore", data["fruits"])
     displayAll(cidb, "storage")
 }
