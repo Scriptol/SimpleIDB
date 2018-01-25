@@ -7,13 +7,13 @@
 */
 
 class SimpleIDB {
-    open(dname, sname) {
+    open(dname, sname, schema) {
         this.dname=dname
 	    return new Promise(function(resolve) {
     	    var r = window.indexedDB.open(dname)
 		    r.onupgradeneeded = function() {
 		        var idb = r.result
-		        var store = idb.createObjectStore(sname, {keyPath: "name", autoIncrement:false})
+		        var store = idb.createObjectStore(sname, schema)
 		    }
 		    r.onsuccess = function() {
 			    var idb = r.result

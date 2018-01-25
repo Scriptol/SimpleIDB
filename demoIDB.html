@@ -4,6 +4,11 @@
 <meta charset=utf-8>
 <title>SimpleIDB demo</title>
 <script type="text/javascript" src="SimpleIDB.js"></script>
+<style>
+    body {
+        margin:48px;
+    }
+</style>
 </head>
 
 <body>
@@ -53,7 +58,7 @@
 var cidb = new SimpleIDB()
 
 async function displayAll(cidb, storage) {
-    var idb = await cidb.open("fruits", "fstore")
+    var idb = await cidb.open("fruits", "fstore", {keyPath: "name", autoIncrement:false})
 	var cont = await cidb.dump(idb, "fstore")
 	var storage = document.getElementById(storage)
 	storage.innerHTML=""

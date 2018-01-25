@@ -18,11 +18,11 @@ Since the functions return a promise and are called with await, they must be cal
 
 ### Define an instance
 
-`var cidb = SimpleIDB("basename")`
+`var cidb = SimpleIDB()`
 
 ### Open the database
 
-`var idb = await cidb.open("storename", schema)`
+`var idb = await cidb.open("basename", "storename", schema)`
 
 A simple schema may have the form:
 
