@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8>
+<title>SimpleIDB local demo</title>
+<script type="text/javascript" src="SimpleIDB.js"></script>
+</head>
+
+<body>
+<h1>SimpleIDB local demo</h1>
+<p>Demo of the interface to IndexedDB, with data in the page for a local test.</p>
+<p>Fill an IndexedDB database with data from the page, display its content, and then access the records.</p>
+<h2>Fill and dump</h2>
+<div id="storage"></div>
+<h2>Read</h2>
+<p>Enter the name of a fruit (apple, orange, strawberry, blueberry) to get the infos. </p>
+<p>
+<form name="form1" method="post" action="">
+  <input type="text"  id="searchval">
+  <input type="button" value="Search" onclick="search()">
+</form>
+</p>
+<fieldset><legend>Read database</legend>
+<div id="storageR"></div>
+</fieldset>
+
+<h2>Add a record</h2>
+<p>Enter the description of another fruit to add it or replace it.</p>
+<p>
+<form name="form1" method="post" action="">
+  Name <input type="text"  id="addname">
+  Color <input type="text"  id="addcolor">
+  <input type="button" value="Add it" onclick="add()">
+</form>
+</p>
+<fieldset><legend>New content</legend>
+<div id="storageA"></div>
+</fieldset>
+
+<h2>Delete a record</h2>
+<p>Enter the name of a fruit to be removed from the database.</p>
+<p>
+<form name="form1" method="post" action="">
+  Name <input type="text"  id="delname">
+  <input type="button" value="Delete it" onclick="remove()">
+</form>
+</p>
+<fieldset><legend>New content</legend>
+<div id="storageD"></div>
+</fieldset>
+
+<script>
+var data={ "fruits": [
+  {
+	"name": "orange",	
+	"color":"orange",
+	"origin":"Asia",
+	"content":"200"
+  },
+  {
+	"name": "apple",  
+	"color":"red, green, yellow",
+	"origin":"Asia",
+	"content":"1000"
+  },
+  {
+	"name":"strawberry",   
+	"color": "red",
+	"origin": "France",
+	"content":"50"
+  },
+  {
+	"name":"blueberry",
+	"color":"purple",
+	"origin":"America",
+	"content":"300"
+  }
+ ]
+}
+
+var cidb = new SimpleIDB()
+
+async function displayAll(cidb, storage) {
+    var idb = await cidb.open("fruits", "fstore")    
+	var cont = await cidb.dump(idb, "fstore")
+	var storage = document.getElementById(storage)
+	storage.innerHTML=""
+	for(var x of cont) {
+        storage.innerHTML += "Name " + x["name"] + " : " + x["origin"] + " " + x["color"] + "<br>"	    
+	}    
+}
+
+async function start(fname) {
+	var idb = await cidb.open("fruits", "fstore")
+	await cidb.fill(idb, "fstore", data["fruits"])
+	displayAll(cidb, "storage")
+}
+window.onload= start("fruits.js")
+
+async function search() {
+	var key = document.getElementById("searchval").value
+	var infos = await cidb.read("fstore", key)
+	document.getElementById("storageR").innerHTML = JSON.stringify(infos, null, ' ')
+}    
+
+async function add() {
+    var idb = await cidb.open("fruits", "fstore")
+    
+	let name = document.getElementById("addname").value
+	let color = document.getElementById("addcolor").value
+	let obj = { "name": name, "origin": "", "color": color }
+	await cidb.write("fstore", obj)
+	
+    displayAll(cidb, "storageA")
+}  
+
+async function remove() {
+	let name = document.getElementById("delname").value
+	await cidb.remove("fstore", name)
+    displayAll(cidb, "storageD")	
+} 
+</script>
+
+<p>&copy; 2018 Scriptol.com</p>
+</body>
+</html>
