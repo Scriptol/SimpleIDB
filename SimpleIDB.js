@@ -20,7 +20,7 @@ class SimpleIDB {
 			    resolve(idb)
 	        }
     	    r.onerror = function (e) {
-			    alert("Enable to open IndexedDB, " + e.target.errorCode)
+			    alert("Unable to open IndexedDB.")
 	        }    
 	    })
     }

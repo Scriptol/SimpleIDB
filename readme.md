@@ -59,7 +59,7 @@ The obj parameter is an object with the same structure as the other obects recor
 
 `await cidb.remove("storename", key)`
 
-The key here also is the value of the property defined in keyPath or an identifier is no schema is given.
+The key here also is the value of the property defined in keyPath or an identifier if no schema is given.
 
 ---
 &copy; 2018 [Scriptol.com](https://www.scriptol.com/)
