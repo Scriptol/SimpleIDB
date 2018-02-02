@@ -64,7 +64,7 @@ The obj parameter is an object with the same structure as the other obects recor
 
 ### Search a record or a set of records matching a value in an index
 
-`await cidb.getIndex("storename", "indexname", "value"`
+`await cidb.getIndex("storename", "indexname", "value")`
 
 An array of identifiers is returned. To get a record, use the read method with an identifier as argument.
 
