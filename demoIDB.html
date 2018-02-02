@@ -57,23 +57,23 @@
 <script>
 var cidb = new SimpleIDB()
 
-async function displayAll(cidb, storage) {
-    var idb = await cidb.open("fruits", "fstore", {keyPath: "name", autoIncrement:false})
+async function displayAll(cidb, idb, storage) {
 	var cont = await cidb.dump(idb, "fstore")
 	var storage = document.getElementById(storage)
 	storage.innerHTML=""
 	for(var x of cont) {
-        storage.innerHTML += "Name " + x["name"] + " : " + x["origin"] + " " + x["color"] + "<br>"	    
-	}    
+        storage.innerHTML += "Name " + x["name"] + " : " + x["origin"] + " " + x["color"] + "<br>"	   	}    
 }
 
 async function start(fname) {
 	var response = await fetch(fname)
 	var str = await response.text();
 	var data = JSON.parse(str)
-	var idb = await cidb.open("fruits", "fstore", {keyPath: "name", autoIncrement:false})
+    var idb = await cidb.open("fruits", "fstore",  {
+            schema: { keyPath: "name", autoIncrement:false }
+        })
 	await cidb.fill(idb, "fstore", data["fruits"])
-    displayAll(cidb, "storage")
+    displayAll(cidb, idb, "storage")
 }
 window.onload= start("fruits.js")
 
@@ -87,14 +87,14 @@ async function add() {
 	let name = document.getElementById("addname").value
 	let color = document.getElementById("addcolor").value
 	let obj = { "name": name, "origin": "", "color": color }
-	await cidb.write("fstore", obj)
-    displayAll(cidb, "storageA")	
+	let idb = await cidb.write("fstore", obj)
+    displayAll(cidb, idb, "storageA")	
 } 
 
 async function remove() {
 	let name = document.getElementById("delname").value
-	await cidb.remove("fstore", name)
-    displayAll(cidb, "storageD")	
+	let idb = await cidb.remove("fstore", name)
+    displayAll(cidb, idb, "storageD")	
 } 
 
 </script>

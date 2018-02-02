@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset=utf-8 />
+<title>Delete Database</title>
+</head>
+<script>
+var dname="fruits"
+var k = indexedDB.deleteDatabase(dname)
+    k.onsuccess = function(e) {
+        alert(dname + " deleted.")
+}      
+</script>
+<body>
+</body>
+</html>

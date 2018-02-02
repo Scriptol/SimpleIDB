@@ -2,7 +2,8 @@
 
 Class interface to IndexedDB.
 
-Demo: [SimpleIDB Demo](https://www.scriptol.com/javascript/demoIDB.html)
+Basic demo: [SimpleIDB Basic Demo](https://www.scriptol.com/javascript/demoIDB.html)
+Index demo: [SimpleIDB Index Demo](https://www.scriptol.com/javascript/demoIndex.html)
 
 
 
@@ -22,11 +23,17 @@ Since the functions return a promise and are called with await, they must be cal
 
 ### Open the database
 
-`var idb = await cidb.open("basename", "storename", schema)`
+`var idb = await cidb.open("basename", "storename", { schema: s, index: i })`
 
 A simple schema may have the form:
 
 `{ keyPath: "name"}`
+
+A simple index may be:
+
+`[ name:"abc", data: somecontent]`
+
+The third parameter is optional or may holds only a schema or an index. The index option may be a single object or an array of objects.
 
 ### Fill the database
 
@@ -55,11 +62,23 @@ A record is added is the key does not exists, otherwise it is replaced by the ne
 
 The obj parameter is an object with the same structure as the other obects recorded.
 
+### Search a record or a set of records matching a value in an index
+
+`await cidb.getIndex("storename", "indexname", "value"`
+
+An array of identifiers is returned. To get a record, use the read method with an identifier as argument.
+
 ### Remove a record from the database
 
 `await cidb.remove("storename", key)`
 
 The key here also is the value of the property defined in keyPath or an identifier if no schema is given.
+
+### Delete a database
+
+`await cidb.kill("databasename")`
+
+An HTML file is included to delete a database, that is required if you change the schema or the index without upgrading the version.
 
 ---
 &copy; 2018 [Scriptol.com](https://www.scriptol.com/)

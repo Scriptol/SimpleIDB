@@ -12,11 +12,12 @@
 </head>
 
 <body>
-<h1>SimpleIDB local demo</h1>
-<p>Demo of the interface to IndexedDB, with data in the page for a local test.</p>
-<p>Fill an IndexedDB database with data from the page, display its content, and then access the records.</p>
+<h1>SimpleIDB index demo</h1>
+<p>Demo of the interface to IndexedDB working locally.</p>
+<p>Test of createIndex method of objectStore and the index method. The query returns an array of names of fruits matching the value given, a color or origin.</p>
 <h2>Fill and dump</h2>
 <div id="storage"></div>
+
 <h2>Read</h2>
 <p>Enter the name of a fruit (apple, orange, strawberry, blueberry) to get the infos. </p>
 <p>
@@ -29,30 +30,30 @@
 <div id="storageR"></div>
 </fieldset>
 
-<h2>Add a record</h2>
-<p>Enter the description of another fruit to add it or replace it.</p>
+<h2>Search by color</h2>
+<p>Enter a color to get the id(s) of the record(s).</p>
 <p>
 <form name="form1" method="post" action="">
-  Name <input type="text"  id="addname">
-  Color <input type="text"  id="addcolor">
-  <input type="button" value="Add it" onclick="add()">
+  <input type="text"  id="colval">
+  <input type="button" value="Color" onClick="getByIndex('colval', 'icolor', 'storageCol')">
 </form>
 </p>
-<fieldset><legend>New content</legend>
-<div id="storageA"></div>
+<fieldset><legend>Read database</legend>
+<div id="storageCol"></div>
 </fieldset>
 
-<h2>Delete a record</h2>
-<p>Enter the name of a fruit to be removed from the database.</p>
+<h2>Search by origin</h2>
+<p>Enter a country to get the id(s) of the record(s).</p>
 <p>
 <form name="form1" method="post" action="">
-  Name <input type="text"  id="delname">
-  <input type="button" value="Delete it" onclick="remove()">
+  <input type="text"  id="origval">
+  <input type="button" value="Country" onClick="getByIndex('origval', 'iorigin', 'storageOrg')">
 </form>
 </p>
-<fieldset><legend>New content</legend>
-<div id="storageD"></div>
+<fieldset><legend>Read database</legend>
+<div id="storageOrg"></div>
 </fieldset>
+
 
 <script>
 var data={ "fruits": [
@@ -90,38 +91,40 @@ async function displayAll(cidb, idb, storage) {
 	var storage = document.getElementById(storage)
 	storage.innerHTML=""
 	for(var x of cont) {
-        storage.innerHTML += "Name " + x["name"] + " : " + x["origin"] + " " + x["color"] + "<br>"	    
+        storage.innerHTML += x["name"] + " / " + x["origin"] + " / " + x["color"] + " / " + x['content']+"<br>"	    
 	}    
 }
 
+
 async function start(fname) {
     var idb = await cidb.open("fruits", "fstore",  {
-            schema: { keyPath: "name", autoIncrement:false }
+            schema: { keyPath: "name", autoIncrement:false },
+	        index: 
+	            [
+	                ["icolor", "color", { unique: false }],
+	                ["iorigin", "origin", { unique: false }] 
+	           ]     
+	          
         })
 	await cidb.fill(idb, "fstore", data["fruits"])
 	displayAll(cidb, idb, "storage")
 }
+
 window.onload= start("fruits.js")
 
 async function search() {
 	var key = document.getElementById("searchval").value
 	var infos = await cidb.read("fstore", key)
-	document.getElementById("storageR").innerHTML = JSON.stringify(infos, null, ' ')
-}    
-
-async function add() {
-	let name = document.getElementById("addname").value
-	let color = document.getElementById("addcolor").value
-	let obj = { "name": name, "origin": "", "color": color }
-	var idb = await cidb.write("fstore", obj)
-    displayAll(cidb, idb, "storageA")
+	document.getElementById("storageR").innerHTML = JSON.stringify(infos)
 }  
 
-async function remove() {
-	let name = document.getElementById("delname").value
-	var idb = await cidb.remove("fstore", name)
-    displayAll(cidb, idb, "storageD")	
-} 
+async function getByIndex(id, table, storage) {
+	var val = document.getElementById(id).value
+	var infos = await cidb.getIndex("fstore", table , val)
+	document.getElementById(storage).innerHTML = JSON.stringify(infos)
+}    
+
+
 </script>
 
 <p>&copy; 2018 Scriptol.com</p>
