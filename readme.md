@@ -31,7 +31,7 @@ A simple schema may have the form:
 
 A simple index may be:
 
-`[ name:"abc", data: somecontent]`
+`["icolor", "color", { unique: false }]`
 
 The third parameter is optional or may holds only a schema or an index. The index option may be a single object or an array of objects.
 
